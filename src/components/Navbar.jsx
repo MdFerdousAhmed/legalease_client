@@ -9,10 +9,10 @@ import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-   const router = useRouter();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { data: session, isPending } = useSession();
-  console.log("session",session, "is pending", isPending);
+  console.log("session", session, "is pending", isPending);
 
   const user = session?.user;
 
@@ -23,9 +23,24 @@ export default function Navbar() {
 
 
   const navLinks = [
-    { label: "Home", href: "/home" },
+    { label: "Home", href: "/" },
     { label: "Browse Lawyers", href: "/browse-lawyers" },
   ];
+
+  const dashboardLinks = {
+    user: '/dashboard/user',
+    lawyer: '/dashboard/lawyer',
+    admin: '/dashboard/admin'
+  }
+
+  if (user?.email) {
+    navLinks.push(
+      {
+        label: 'Dashboard',
+        href: dashboardLinks[user?.role || 'user']
+      }
+    )
+  }
 
   return (
     <nav className="sticky top-0 z-50 border-b border-zinc-800  backdrop-blur-md">

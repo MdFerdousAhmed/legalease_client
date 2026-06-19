@@ -8,7 +8,7 @@ export default function WhyChoose() {
       <div className="text-center mb-16">
         <h2 className="text-3xl font-bold text-white md:text-4xl">Why Choose Eventora</h2>
         <p className="text-slate-400 max-w-xl mx-auto text-sm mt-3">
-          Discover rewarding opportunities in the legal industry. Connect with leading law firms, corporate legal teams, and recruiters to advance your career with confidence.
+          LegalEase simplifies legal hiring by bringing together lawyers, job seekers, and recruiters in one secure and efficient ecosystem.
         </p>
       </div>
 

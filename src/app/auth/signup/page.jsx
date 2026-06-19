@@ -15,7 +15,7 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("client");
+  const [role, setRole] = useState("user");
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,7 +36,7 @@ export default function SignupPage() {
     setSuccess("");
     setIsLoading(true);
 
-    const plan = role === "client" ? "client_fee" : "lawyer_fee";
+    const plan = role === "user" ? "user_fee" : "lawyer_fee";
 
     try {
       const { data, error: authError } = await signUp.email({
@@ -163,13 +163,13 @@ export default function SignupPage() {
           {/* Role Selection (FIXED) */}
           <div className="flex flex-col gap-4">
             <Label>Selection role</Label>
-            <RadioGroup defaultValue="client" name="role" onChange={value => setRole(value)} orientation="horizontal">
-              <Radio value="client">
+            <RadioGroup defaultValue="user" name="role" onChange={value => setRole(value)} orientation="horizontal">
+              <Radio value="user">
                 <Radio.Content>
                   <Radio.Control>
                     <Radio.Indicator />
                   </Radio.Control>
-                  Client
+                  User
                 </Radio.Content>
               </Radio>
               <Radio value="lawyer">
