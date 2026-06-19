@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Button, Link, TextField, Label, InputGroup, Input, FieldError } from "@heroui/react";
+import { Card, Button, Link, TextField, Label, InputGroup, Input } from "@heroui/react";
 import { Description, Radio, RadioGroup } from "@heroui/react";
 
 import { Eye, EyeSlash, Person, At, ShieldKeyhole } from "@gravity-ui/icons";
 import { authClient, signUp } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CgGoogle } from "react-icons/cg";
 import { ToastContainer } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SignupPage() {
   // Form fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
+  const [role, setRole] = useState("client");
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,7 +36,7 @@ export default function SignupPage() {
     setSuccess("");
     setIsLoading(true);
 
-    const plan = role === 'user' ? 'user_free' : 'lawyer_free';
+    const plan = role === "client" ? "client_fee" : "lawyer_fee";
 
     try {
       const { data, error: authError } = await signUp.email({
@@ -44,29 +44,39 @@ export default function SignupPage() {
         password,
         name,
         role,
-        plan
+        plan,
+        callbackURL: "/",
       });
 
       if (authError) {
         setError(authError.message || "Something went wrong during signup.");
-      } else {
-        setSuccess("Account created successfully! Welcome.");
-        setName("");
-        setEmail("");
-        setPassword("");
-        router.push(redirectTo);
+        setIsLoading(false);
+        return;
       }
+
+      setSuccess("Account created successfully! Welcome.");
+
+      setName("");
+      setEmail("");
+      setPassword("");
+
+      router.push(redirectTo);
     } catch (err) {
-      setError("An unexpected network error occurred.");
+      setError(err?.message || "An unexpected network error occurred.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-    });
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: redirectTo,
+      });
+    } catch (err) {
+      setError("Google sign-in failed.");
+    }
   };
 
   return (
@@ -75,8 +85,12 @@ export default function SignupPage() {
 
         {/* Header Container */}
         <div className="flex flex-col items-center justify-center gap-1 pb-6 border-b border-zinc-100 dark:border-zinc-800 mb-6 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Create an account</h1>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Fill in the fields below to get started</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+            Create an account
+          </h1>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Fill in the fields below to get started
+          </p>
         </div>
 
         {/* Form Body */}
@@ -84,9 +98,13 @@ export default function SignupPage() {
 
           {/* Name Field */}
           <TextField isRequired name="name" className="flex flex-col gap-1.5">
-            <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Name</Label>
-            <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
-              <Person className="text-zinc-400 pointer-events-none" size={16} />
+            <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Name
+            </Label>
+
+            <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900">
+              <Person className="text-zinc-400" size={16} />
+
               <Input
                 type="text"
                 placeholder="Enter your full name"
@@ -99,9 +117,13 @@ export default function SignupPage() {
 
           {/* Email Field */}
           <TextField isRequired name="email" type="email" className="flex flex-col gap-1.5">
-            <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email Address</Label>
-            <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
-              <At className="text-zinc-400 pointer-events-none" size={16} />
+            <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Email Address
+            </Label>
+
+            <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900">
+              <At className="text-zinc-400" size={16} />
+
               <Input
                 placeholder="you@example.com"
                 value={email}
@@ -113,9 +135,13 @@ export default function SignupPage() {
 
           {/* Password Field */}
           <TextField isRequired name="password" className="flex flex-col gap-1.5">
-            <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</Label>
-            <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
-              <ShieldKeyhole className="text-zinc-400 pointer-events-none" size={16} />
+            <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Password
+            </Label>
+
+            <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900">
+              <ShieldKeyhole className="text-zinc-400" size={16} />
+
               <Input
                 type={isVisible ? "text" : "password"}
                 placeholder="Choose a password"
@@ -123,54 +149,55 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc-100"
               />
+
               <button
-                className="focus:outline-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
                 type="button"
                 onClick={toggleVisibility}
-                aria-label="toggle password visibility"
+                className="text-zinc-400 hover:text-zinc-600"
               >
                 {isVisible ? <EyeSlash size={18} /> : <Eye size={18} />}
               </button>
             </InputGroup>
           </TextField>
 
-          {/* Role Selection */}
+          {/* Role Selection (FIXED) */}
           <div className="flex flex-col gap-4">
-            <Label>Subscription plan</Label>
-            <RadioGroup defaultValue="seeker" name="role" onChange={value => setRole(value)} orientation="horizontal">
-              <Radio value="user">
-                <Radio.Control>
-                  <Radio.Indicator />
-                </Radio.Control>
+            <Label>Selection role</Label>
+            <RadioGroup defaultValue="client" name="role" onChange={value => setRole(value)} orientation="horizontal">
+              <Radio value="client">
                 <Radio.Content>
-                  <Label>User</Label>
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  Client
                 </Radio.Content>
               </Radio>
               <Radio value="lawyer">
-                <Radio.Control>
-                  <Radio.Indicator />
-                </Radio.Control>
                 <Radio.Content>
-                  <Label>Lawyer</Label>
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  Lawyer
                 </Radio.Content>
               </Radio>
             </RadioGroup>
           </div>
 
-          {/* Dynamic Status Badges */}
+          {/* Error */}
           {error && (
             <div className="p-3.5 text-xs font-medium rounded-xl bg-red-100/60 dark:bg-red-950/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900">
               <span className="font-semibold">Error:</span> {error}
             </div>
           )}
 
+          {/* Success */}
           {success && (
             <div className="p-3.5 text-xs font-medium rounded-xl bg-emerald-100/60 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900">
               <span className="font-semibold">Success:</span> {success}
             </div>
           )}
 
-          {/* Action Button */}
+          {/* Submit Button */}
           <Button
             type="submit"
             color="primary"
@@ -181,20 +208,27 @@ export default function SignupPage() {
             Sign Up
           </Button>
 
-          {/* Navigation Option */}
+          {/* Sign In Link */}
           <div className="text-center pt-4 border-t border-zinc-100 dark:border-zinc-800 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             Already have an account?{" "}
-            <Link href={`/auth/signin?redirect=${redirectTo}    `} className="font-medium cursor-pointer text-sm text-blue-600 dark:text-blue-400">
+            <Link
+              href={`/auth/signin?redirect=${redirectTo}`}
+              className="font-medium text-sm text-blue-600 dark:text-blue-400"
+            >
               Sign in instead
             </Link>
           </div>
 
         </form>
-        <p className="text-center">or</p>
-        <Button onClick={handleGoogleSignIn} className="w-full" variant="outline">
-          <CgGoogle />
+
+        <p className="text-center mt-4">or</p>
+
+        {/* Google Login */}
+        <Button onClick={handleGoogleSignIn} className="w-full">
+          <FcGoogle />
           Sign in with Google
         </Button>
+
         <ToastContainer />
       </Card>
     </div>

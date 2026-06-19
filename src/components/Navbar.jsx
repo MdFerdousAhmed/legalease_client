@@ -4,9 +4,23 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import NavLink from "./shared/NavLink";
+import { signOut, useSession } from "@/lib/auth-client";
+import { Button } from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session, isPending } = useSession();
+  console.log("session",session, "is pending", isPending);
+
+  const user = session?.user;
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
+
 
   const navLinks = [
     { label: "Home", href: "/home" },
@@ -14,7 +28,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-zinc-800  backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
 
         {/* LEFT: LOGO */}
@@ -79,16 +93,25 @@ export default function Navbar() {
           <div className="h-6 w-px bg-sky-500" />
 
           {/* SIGN IN */}
-          <Link
-            href="/auth/signin"
-            className="text-sm text-violet-400 hover:text-violet-300"
-          >
-            Sign In
-          </Link>
+          {user ? (
+            <>
+              Hi, {user.name || user.email}
+              <Button variant="danger" onClick={handleSignOut}>
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <Link
+              href="/auth/signin"
+              className="text-sm text-violet-400 hover:text-violet-300"
+            >
+              Sign In
+            </Link>
+          )}
 
           {/* GET STARTED */}
           <Link
-            href="/auth/signup"
+            href="/auth/register"
             className="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-5 py-2 text-sm font-medium text-white hover:opacity-90"
           >
             Get Started
@@ -126,7 +149,7 @@ export default function Navbar() {
 
             <li>
               <Link
-                href="/auth/signup"
+                href="/auth/register"
                 onClick={() => setIsOpen(false)}
                 className="mt-2 block rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-4 py-2 text-center text-white"
               >

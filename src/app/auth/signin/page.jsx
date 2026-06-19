@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Card, Button, Link, TextField, Label, InputGroup, Input } from "@heroui/react";
 import { Eye, EyeSlash, At, ShieldKeyhole } from "@gravity-ui/icons";
-import { signIn } from "@/lib/auth-client";
+import { authClient, signIn } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ToastContainer } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
 
 export default function SigninPage() {
     // Form fields
@@ -50,6 +52,12 @@ export default function SigninPage() {
         }
     };
 
+    const handleGoogleSignIn = async () => {
+        const data = await authClient.signIn.social({
+            provider: "google",
+        });
+    };
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4">
             <Card className="w-full max-w-md p-6 shadow-sm border border-zinc-200 dark:border-zinc-800">
@@ -69,7 +77,7 @@ export default function SigninPage() {
                         <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-primary transition-colors">
                             <At className="text-zinc-400 pointer-events-none" size={16} />
                             <Input
-                                placeholder="you@example.com"
+                                placeholder="ferdous@gmail.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc-100"
@@ -126,13 +134,19 @@ export default function SigninPage() {
 
                     {/* Navigation Option */}
                     <div className="text-center pt-4 border-t border-zinc-100 dark:border-zinc-800 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                        New to HireLoop?{" "}
+                        New to LegalEase?{" "}
                         <Link href={`/auth/signup?redirect=${redirectTo}`} className="font-medium cursor-pointer text-sm text-blue-600 dark:text-blue-400">
                             Create an account
                         </Link>
                     </div>
 
                 </form>
+                <p className="text-center">or</p>
+                <Button onClick={handleGoogleSignIn} className="w-full" variant="outline">
+                    <FcGoogle />
+                    Sign in with Google
+                </Button>
+                <ToastContainer />
             </Card>
         </div>
     );

@@ -25,7 +25,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="border-t border-zinc-800 bg-black">
+    <footer className="border-t border-zinc-800">
       <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
         {/* Top Section */}
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
@@ -51,21 +51,21 @@ export default function Footer() {
             <div className="mt-6 flex items-center gap-3">
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:bg-violet-500 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 text-zinc-400 transition hover:bg-violet-500 hover:text-white"
               >
                 <LogoFacebook />
               </a>
 
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition  hover:text-white hover:bg-violet-500"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 text-zinc-400 transition  hover:text-white hover:bg-violet-500"
               >
                 <LogoGithub />
               </a>
 
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:bg-violet-500 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 text-zinc-400 transition hover:bg-violet-500 hover:text-white"
               >
                 <LogoLinkedin />
               </a>
