@@ -2,54 +2,72 @@
 
 import Image from "next/image";
 
+const testimonials = [
+  {
+    quote:
+      "LegalEase helped me land my dream position at a leading law firm within weeks. The application process was seamless, and the job recommendations perfectly matched my experience and career goals.",
+    name: "Emily Carter",
+    role: "Corporate Lawyer",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
+  },
+  {
+    quote:
+      "Finding qualified legal professionals used to be challenging. LegalEase streamlined our hiring process and connected us with top-tier candidates faster than any other platform we've used.",
+    name: "David Mitchell",
+    role: "Legal Recruitment Manager",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
+  },
+];
+
 export default function Testimonials() {
   return (
     <section className="py-24 max-w-7xl mx-auto px-6 w-full">
+      {/* Section Header */}
       <div className="text-center mb-16">
-        <h2 className="text-3xl font-bold text-white md:text-4xl font-sans">Client Testimonials</h2>
-        <p className="text-slate-400 max-w-xl mx-auto text-sm mt-3">
-          Do not just take our word for it. Hear from leading organizers and attendees enjoying the platform.
+        <h2 className="text-3xl md:text-4xl font-bold">
+          What Our Users Say
+        </h2>
+
+        <p className="max-w-2xl mx-auto mt-4 text-default-500">
+          Discover why legal professionals and recruiters trust LegalEase to
+          grow their careers and build exceptional legal teams.
         </p>
       </div>
 
+      {/* Testimonials Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-slate-900/50 border border-white/5 backdrop-blur-xl hover:border-pink-500/30 transition-all duration-300 p-8 rounded-2xl space-y-6 relative hover:-translate-y-1">
-          <p className="text-slate-300 italic text-md leading-relaxed">
-            Discover rewarding opportunities in the legal industry. Connect with leading law firms, corporate legal teams, and recruiters to advance your career with confidence.
-          </p>
-          <div className="flex items-center gap-4">
-            <Image
-              width={48}
-              height={48}
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330"
-              className="rounded-full h-12 w-12 object-cover shrink-0"
-              alt="user image"
-            />
-            <div>
-              <h4 className="text-white font-bold text-sm">Sarah Jenkins</h4>
-              <p className="text-indigo-500 text-xs font-semibold">Director, TechVibe Events</p>
-            </div>
-          </div>
-        </div>
+        {testimonials.map((testimonial, index) => (
+          <div
+            key={index}
+            className="bg-content1 border border-default-200 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+          >
+            <p className="text-default-600 italic leading-relaxed text-lg">
+              "{testimonial.quote}"
+            </p>
 
-        <div className="bg-slate-900/50 border border-white/5 backdrop-blur-xl hover:border-pink-500/30 transition-all duration-300 p-8 rounded-2xl space-y-6 relative hover:-translate-y-1">
-          <p className="text-slate-300 italic text-md leading-relaxed">
-            Find qualified legal professionals faster than ever. Post jobs, manage applications, and connect with top talent through a streamlined hiring experience.
-          </p>
-          <div className="flex items-center gap-4">
-            <Image
-              width={48}
-              height={48}
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d"
-              className="rounded-full w-12 h-12 object-cover shrink-0"
-              alt="user image"
-            />
-            <div>
-              <h4 className="text-white font-bold text-sm">Marcus Brody</h4>
-              <p className="text-indigo-500 text-xs font-semibold">Fervent Event Attendee</p>
+            <div className="flex items-center gap-4 mt-8">
+              <Image
+                src={testimonial.image}
+                alt={testimonial.name}
+                width={56}
+                height={56}
+                className="rounded-full object-cover w-14 h-14"
+              />
+
+              <div>
+                <h4 className="font-semibold text-lg">
+                  {testimonial.name}
+                </h4>
+
+                <p className="text-primary text-sm">
+                  {testimonial.role}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );

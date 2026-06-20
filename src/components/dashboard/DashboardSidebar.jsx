@@ -18,7 +18,7 @@ export function DashboardSidebar() {
                       className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-default"
                       type="button"
                     >
-                      <item.icon className="size-5 text-muted" />
+                      <item.icon className="size-5 text-gray-500" />
                       {item.label}
                     </button>
                   ))}

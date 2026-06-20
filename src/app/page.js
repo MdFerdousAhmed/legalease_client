@@ -12,7 +12,7 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div className="min-h-screen grid items-center justify-center bg-white dark:bg-black text-black dark:text-white transition-all duration-300">
       <Banner/>
       <WhyChoose/>
       <Statistics stats={stats}/>

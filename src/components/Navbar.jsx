@@ -60,7 +60,7 @@ export default function Navbar() {
 
         {/* MOBILE MENU BUTTON */}
         <button
-          className="md:hidden text-white"
+          className="md:hidden text-gray"
           onClick={() => setIsOpen(!isOpen)}
         >
           <svg
@@ -116,21 +116,24 @@ export default function Navbar() {
               </Button>
             </>
           ) : (
-            <Link
-              href="/auth/signin"
-              className="text-sm text-violet-400 hover:text-violet-300"
-            >
-              Sign In
-            </Link>
+            <div className="flex justify-center items-center gap-5">
+              <Link
+                href="/auth/signin"
+                className="text-sm text-violet-400 hover:text-violet-300"
+              >
+                Sign In
+              </Link>
+
+              {/* GET STARTED */}
+              <Link
+                href="/auth/signup"
+                className="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-5 py-2 text-sm font-medium text-white hover:opacity-90"
+              >
+                Get Started
+              </Link>
+            </div>
           )}
 
-          {/* GET STARTED */}
-          <Link
-            href="/auth/register"
-            className="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-5 py-2 text-sm font-medium text-white hover:opacity-90"
-          >
-            Get Started
-          </Link>
         </div>
       </div>
 
@@ -143,7 +146,7 @@ export default function Navbar() {
                 <Link
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="block text-zinc-300 hover:text-white"
+                  className="block text-gray-500 hover:text-gray"
                 >
                   {item.label}
                 </Link>
@@ -152,25 +155,32 @@ export default function Navbar() {
 
             <div className="my-2 h-px bg-zinc-800" />
 
-            <li>
-              <Link
-                href="/auth/signin"
-                onClick={() => setIsOpen(false)}
-                className="block text-violet-400"
-              >
-                Sign In
-              </Link>
-            </li>
+            {/* SIGN IN */}
+            {user ? (
+              <>
+                Hi, {user.name || user.email}
+                <Button variant="danger" onClick={handleSignOut}>
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <div className="flex justify-center items-center gap-5">
+                <Link
+                  href="/auth/signin"
+                  className="text-sm text-violet-400 hover:text-violet-300"
+                >
+                  Sign In
+                </Link>
 
-            <li>
-              <Link
-                href="/auth/register"
-                onClick={() => setIsOpen(false)}
-                className="mt-2 block rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-4 py-2 text-center text-white"
-              >
-                Get Started
-              </Link>
-            </li>
+                {/* GET STARTED */}
+                <Link
+                  href="/auth/signup"
+                  className="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-500 px-5 py-2 text-sm font-medium text-white hover:opacity-90"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
           </ul>
         </div>
       )}
