@@ -1,8 +1,12 @@
 "use client"
+import { getLawyer } from '@/lib/api/lawyer';
 import { useSession } from '@/lib/auth-client';
 import React from 'react';
 
 const LawyerDashboardHomePage = () => {
+
+  // const lawyers = await getLawyer(lawyerId)
+  // console.log("lawyer id",lawyers);
 
   const {data: session, isPending} = useSession();
 

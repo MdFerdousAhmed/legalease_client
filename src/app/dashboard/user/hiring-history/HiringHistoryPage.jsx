@@ -8,7 +8,7 @@ export default function HiringHistoryPage() {
       id: "1",
       lawyerName: "Abdul Karim",
       specialization: "Criminal Law",
-      fee: 5000,
+      fee: 500,
       hiringDate: "2026-06-20",
       status: "pending",
     },
@@ -16,7 +16,7 @@ export default function HiringHistoryPage() {
       id: "2",
       lawyerName: "Sarah Islam",
       specialization: "Family Law",
-      fee: 7000,
+      fee: 700,
       hiringDate: "2026-06-18",
       status: "accepted",
     },
@@ -24,7 +24,7 @@ export default function HiringHistoryPage() {
       id: "3",
       lawyerName: "Tanvir Hossain",
       specialization: "Corporate Law",
-      fee: 10000,
+      fee: 1000,
       hiringDate: "2026-06-15",
       status: "rejected",
     },
@@ -34,7 +34,7 @@ export default function HiringHistoryPage() {
     if (status === "pending") return "bg-yellow-100 text-yellow-700";
     if (status === "accepted") return "bg-green-100 text-green-700";
     if (status === "rejected") return "bg-red-100 text-red-700";
-    return "";
+    return ""; 
   };
 
   return (
@@ -58,7 +58,7 @@ export default function HiringHistoryPage() {
               <tr key={item.id} className="border-t">
                 <td className="px-4 py-3">{item.lawyerName}</td>
                 <td className="px-4 py-3">{item.specialization}</td>
-                <td className="px-4 py-3">৳ {item.fee}</td>
+                <td className="px-4 py-3">$ {item.fee}</td>
                 <td className="px-4 py-3">{item.hiringDate}</td>
                 <td className="px-4 py-3">
                   <span

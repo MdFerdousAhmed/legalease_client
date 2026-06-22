@@ -76,7 +76,7 @@ export default function ManageLegalProfilePage() {
     formData.append("image", file);
 
     // 👉 Replace with your ImgBB API key
-    const apiKey = "YOUR_IMGBB_API_KEY";
+    const apiKey = "IMGBB_API_KEY";
 
     const res = await fetch(
       `https://api.imgbb.com/1/upload?key=${apiKey}`,

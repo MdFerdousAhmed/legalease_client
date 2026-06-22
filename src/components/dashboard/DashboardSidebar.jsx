@@ -11,6 +11,7 @@ import {
   CircleDollar,
   Comment,
   Person,
+  PersonPlus
 } from "@gravity-ui/icons";
 import { Button, Drawer } from "@heroui/react";
 import MobileSidebar from "./MobileSidebar";
@@ -41,6 +42,12 @@ export function DashboardSidebar() {
   ];
 
   const lawyerMenu = [
+    {
+      key: "add-lawyer",
+      label: "Add lawyer",
+      href: "/dashboard/lawyer/add-lawyer",
+      icon: PersonPlus,
+    },
     {
       key: "hiring-history",
       label: "Hiring History",

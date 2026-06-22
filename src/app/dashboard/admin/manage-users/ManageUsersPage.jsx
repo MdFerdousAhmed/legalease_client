@@ -1,8 +1,12 @@
 "use client";
 
+import { useSession } from "@/lib/auth-client";
 import { useState } from "react";
 
 export default function ManageUsersPage() {
+  const { data: session } = useSession();
+  const user = session?.user;
+  console.log(user);
   const [users, setUsers] = useState([
     {
       id: "1",
