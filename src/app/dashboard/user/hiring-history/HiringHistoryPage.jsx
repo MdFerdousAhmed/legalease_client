@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function HiringHistoryPage() {
   const [hiringList] = useState([
@@ -30,11 +30,24 @@ export default function HiringHistoryPage() {
     },
   ]);
 
+  // const [lawyers, setLawyers] = useState([]);
+  // console.log("lawyer",lawyers);
+
+  // useEffect(() => {
+  //   fetchLawyers();
+  // }, []);
+
+  // const fetchLawyers = async () => {
+  //   const res = await axios.get("/api/lawyers");
+  //   setLawyers(res.data);
+  // };
+
+
   const getStatusStyle = (status) => {
     if (status === "pending") return "bg-yellow-100 text-yellow-700";
     if (status === "accepted") return "bg-green-100 text-green-700";
     if (status === "rejected") return "bg-red-100 text-red-700";
-    return ""; 
+    return "";
   };
 
   return (
@@ -54,19 +67,19 @@ export default function HiringHistoryPage() {
           </thead>
 
           <tbody>
-            {hiringList.map((item) => (
-              <tr key={item.id} className="border-t">
-                <td className="px-4 py-3">{item.lawyerName}</td>
-                <td className="px-4 py-3">{item.specialization}</td>
-                <td className="px-4 py-3">$ {item.fee}</td>
-                <td className="px-4 py-3">{item.hiringDate}</td>
+            {hiringList.map((lawyer) => (
+              <tr key={lawyer.id} className="border-t">
+                <td className="px-4 py-3">{lawyer.lawyerName}</td>
+                <td className="px-4 py-3">{lawyer.specialization}</td>
+                <td className="px-4 py-3">$ {lawyer.fee}</td>
+                <td className="px-4 py-3">{lawyer.hiringDate}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusStyle(
-                      item.status
+                      lawyer.status
                     )}`}
                   >
-                    {item.status}
+                    {lawyer.status}
                   </span>
                 </td>
               </tr>

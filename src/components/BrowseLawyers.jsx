@@ -88,7 +88,7 @@ export default function BrowseLawyers() {
 
         {/* Loading */}
         {loading ? (
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, index) => (
               <div
                 key={index}
@@ -145,7 +145,7 @@ export default function BrowseLawyers() {
                 </div>
 
                 <Link
-                  href={`/lawyers/${lawyer._id}`}
+                  href={`/browse-lawyers/${lawyer._id}`}
                   className="block text-center bg-amber-500 hover:bg-amber-600 text-black font-semibold py-3"
                 >
                   View Profile

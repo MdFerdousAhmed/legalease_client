@@ -5,6 +5,16 @@ export const getLawyer = async (lawyerId, status = 'Available') => {
   return res.json();
  }
 
+  export const lawyerGet = async(id) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/lawyers/${id}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  return res.json();
+}
 
 
 // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
