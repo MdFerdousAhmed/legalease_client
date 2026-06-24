@@ -1,5 +1,6 @@
 import { lawyerGet } from "@/lib/api/lawyer";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function LawyerDetailsPage({ params }) {
   const {id} = await params;
@@ -98,9 +99,9 @@ export default async function LawyerDetailsPage({ params }) {
             </div>
           </div>
 
-          <button className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-xl transition">
+          <Link href={`/browse-lawyers/${id}/hire`} className=" flex items-center justify-center w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 p-6 rounded-xl transition">
             Hire This Lawyer
-          </button>
+          </Link>
         </div>
       </div>
     </div>
