@@ -4,7 +4,7 @@ export default function UnauthorizedPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
       <div className="bg-white shadow-lg rounded-2xl p-10 text-center max-w-md">
-        <h1 className="text-6xl font-bold text-red-500 mb-4">403</h1>
+        <h1 className="text-6xl font-bold text-red-500 mb-4">401</h1>
 
         <h2 className="text-2xl font-semibold mb-2">
           Unauthorized Access

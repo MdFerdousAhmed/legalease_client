@@ -1,92 +1,91 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React from 'react';
+import { Table } from '@heroui/react';
 
-export default function HiringHistoryPage() {
-  const [hiringList] = useState([
-    {
-      id: "1",
-      lawyerName: "Abdul Karim",
-      specialization: "Criminal Law",
-      fee: 500,
-      hiringDate: "2026-06-20",
-      status: "pending",
-    },
-    {
-      id: "2",
-      lawyerName: "Sarah Islam",
-      specialization: "Family Law",
-      fee: 700,
-      hiringDate: "2026-06-18",
-      status: "accepted",
-    },
-    {
-      id: "3",
-      lawyerName: "Tanvir Hossain",
-      specialization: "Corporate Law",
-      fee: 1000,
-      hiringDate: "2026-06-15",
-      status: "rejected",
-    },
-  ]);
-
-  // const [lawyers, setLawyers] = useState([]);
-  // console.log("lawyer",lawyers);
-
-  // useEffect(() => {
-  //   fetchLawyers();
-  // }, []);
-
-  // const fetchLawyers = async () => {
-  //   const res = await axios.get("/api/lawyers");
-  //   setLawyers(res.data);
-  // };
-
-
-  const getStatusStyle = (status) => {
-    if (status === "pending") return "bg-yellow-100 text-yellow-700";
-    if (status === "accepted") return "bg-green-100 text-green-700";
-    if (status === "rejected") return "bg-red-100 text-red-700";
-    return "";
+const HiringHistoryPage = ({ hires = [] }) => {
+  
+  // Cleanly extracts and formats the ISO timestamp string down to YYYY-MM-DD
+  const formatDate = (dateObj) => {
+    if (!dateObj) return '';
+    const dateStr = dateObj.$date ? dateObj.$date : dateObj;
+    return typeof dateStr === 'string' ? dateStr.split('T')[0] : '';
   };
 
   return (
-    <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">Hiring History</h1>
+    <div className="p-6 max-w-7xl mx-auto">
+      {/* Table Heading */}
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Hiring History</h1>
 
-      <div className="overflow-x-auto rounded-lg border">
-        <table className="min-w-full bg-white text-sm">
-          <thead className="bg-gray-100 text-left">
-            <tr>
-              <th className="px-4 py-3">Lawyer</th>
-              <th className="px-4 py-3">Specialization</th>
-              <th className="px-4 py-3">Fee</th>
-              <th className="px-4 py-3">Hiring Date</th>
-              <th className="px-4 py-3">Status</th>
-            </tr>
-          </thead>
+      {/* Hero UI Table Component Container */}
+      <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+        <Table className="w-full bg-white text-left text-sm text-gray-700">
+          <Table.ScrollContainer>
+            <Table.Content aria-label="Lawyer hiring history table">
+              
+              {/* Table Header Structure */}
+              <Table.Header className="bg-gray-50 border-b border-gray-200">
+                {/* fulfills the critical isRowHeader accessibility constraint */}
+                <Table.Column isRowHeader className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                  Lawyer
+                </Table.Column>
+                <Table.Column className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                  Specialization
+                </Table.Column>
+                <Table.Column className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                  Fee
+                </Table.Column>
+                <Table.Column className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                  Hiring Date
+                </Table.Column>
+                <Table.Column className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                  Status
+                </Table.Column>
+              </Table.Header>
 
-          <tbody>
-            {hiringList.map((lawyer) => (
-              <tr key={lawyer.id} className="border-t">
-                <td className="px-4 py-3">{lawyer.lawyerName}</td>
-                <td className="px-4 py-3">{lawyer.specialization}</td>
-                <td className="px-4 py-3">$ {lawyer.fee}</td>
-                <td className="px-4 py-3">{lawyer.hiringDate}</td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusStyle(
-                      lawyer.status
-                    )}`}
-                  >
-                    {lawyer.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              {/* Table Data Rows */}
+              <Table.Body>
+                {hires.map((item) => {
+                  const id = item._id?.$oid || item._id 
+                  return (
+                    <Table.Row key={id} className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
+                      
+                      {/* Lawyer Name */}
+                      <Table.Cell className="px-6 py-5 font-medium text-gray-900 text-base">
+                        {item.lawyerName}
+                      </Table.Cell>
+                      
+                      {/* Specialization */}
+                      <Table.Cell className="px-6 py-5 text-gray-700 text-base">
+                        {item.specialization}
+                      </Table.Cell>
+                      
+                      {/* Fee formatted with $ prefix */}
+                      <Table.Cell className="px-6 py-5 text-gray-700 text-base">
+                        $ {item.fee}
+                      </Table.Cell>
+                      
+                      {/* Formatted Date string */}
+                      <Table.Cell className="px-6 py-5 text-gray-700 text-base">
+                        {formatDate(item.createdAt)}
+                      </Table.Cell>
+                      
+                      {/* Clean Status string */}
+                      <Table.Cell className="px-6 py-5 text-base font-semibold text-gray-900 lowercase">
+                        {item.status}
+                      </Table.Cell>
+
+                    </Table.Row>
+                  );
+                })}
+              </Table.Body>
+
+            </Table.Content>
+          </Table.ScrollContainer>
+        </Table>
       </div>
     </div>
   );
-}
+};
+
+export default HiringHistoryPage;

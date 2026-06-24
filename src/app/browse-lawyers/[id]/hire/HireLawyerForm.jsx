@@ -30,7 +30,9 @@ export default function HireLawyerForm({ client, lawyer }) {
         fee: lawyer?.fee,
         clientName: client?.name,
         clientEmail: client?.email,
+        clientId: client?.id,
         ...formData,
+        dateJoined: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
         status: "pending",
       };
 
@@ -40,6 +42,7 @@ export default function HireLawyerForm({ client, lawyer }) {
         setFormData({
           phone: "",
           address: "",
+          comments: "",
         });
 
         alert("Hiring request submitted successfully!");
@@ -78,6 +81,15 @@ export default function HireLawyerForm({ client, lawyer }) {
           name="address"
           placeholder="Address"
           value={formData.address}
+          onChange={handleChange}
+          required
+          className="w-full border p-3 rounded-lg"
+        />
+        <input
+          type="text"
+          name="comments"
+          placeholder="Comments"
+          value={formData.comments}
           onChange={handleChange}
           required
           className="w-full border p-3 rounded-lg"
