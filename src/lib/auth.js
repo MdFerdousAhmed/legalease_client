@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
+import { admin } from "better-auth/plugins"
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
 const client = new MongoClient(process.env.MONGO_DB_URI);
@@ -29,5 +30,8 @@ export const auth = betterAuth({
         defaultValue:  false
       }
     }
-  }
+  },
+  plugins: [
+    admin()
+  ]
 });
