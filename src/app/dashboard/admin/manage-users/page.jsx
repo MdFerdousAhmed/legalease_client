@@ -1,14 +1,16 @@
+import AdminUsersTable from '@/components/AdminUsersTable';
+import { getUsersList } from '@/lib/api/users';
 import React from 'react';
-import ManageUsersPage from './ManageUsersPage';
-import { getUserSession } from '@/lib/core/session';
 
-const page = async() => {
-   const users = await getUserSession();
+const AdminUsersPage = async() => {
+  const data = await getUsersList()
+  const users = data?.users
   return (
     <div>
-      <ManageUsersPage/>
+      <h2 className='text-4xl p-4'>Users Role Data</h2>
+      <AdminUsersTable users={users}/>
     </div>
   );
 };
 
-export default page;
+export default AdminUsersPage;
