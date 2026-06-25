@@ -1,5 +1,8 @@
 "use server"
 
+import { revalidatePath } from "next/cache";
+import { serverMutation } from "../core/server";
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 export const hireLawyer = async (newHireData) => {
   // console.log("new hire data",newHireData);
@@ -19,4 +22,10 @@ export const hireLawyer = async (newHireData) => {
   catch (error) {
     console.log("error",error);}
 
+  }
+
+  export const updateHire = async(id, data) => {
+    const result = serverMutation(`/api/hires/${id}`, data, 'PATCH');
+    revalidatePath('/dashboard/lawyer/hiring-history')
+    return result;
   }

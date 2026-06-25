@@ -10,6 +10,7 @@ export default function HireLawyerForm({ client, lawyer }) {
   const [formData, setFormData] = useState({
     phone: "",
     address: "",
+    comments: "",
   });
 
   const handleChange = (e) => {
