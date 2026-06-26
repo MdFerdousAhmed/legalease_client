@@ -86,7 +86,7 @@ export default function BrowseLawyers() {
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           <input
             type="text"
-            placeholder="Search lawyer..."
+            placeholder="Search lawyer name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="border border-slate-700 bg-slate-800 rounded-lg px-4 py-2 text-white"
