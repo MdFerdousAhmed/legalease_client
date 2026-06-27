@@ -137,7 +137,7 @@ export default function SignupPageContent() {
               <At size={16} />
 
               <Input
-                placeholder="you@example.com"
+                placeholder="ferdous@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-transparent py-2 text-sm outline-none border-none"
@@ -232,7 +232,7 @@ export default function SignupPageContent() {
 
         <p className="text-center mt-4">or</p>
 
-        <Button onClick={handleGoogleSignIn} className="w-full">
+        <Button onClick={handleGoogleSignIn} className="w-full" variant="outline">
           <FcGoogle />
           Sign in with Google
         </Button>

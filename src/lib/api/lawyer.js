@@ -6,8 +6,7 @@ export const getLawyer = async (lawyerId, status = 'Available') => {
  }
 
   export const lawyerGet = async(id) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/lawyers/${id}`,
+  const res = await fetch(`${baseUrl}/api/lawyers/${id}`,
     {
       cache: "no-store",
     }

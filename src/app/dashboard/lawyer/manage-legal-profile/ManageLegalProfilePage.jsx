@@ -76,7 +76,7 @@ export default function ManageLegalProfilePage() {
     formData.append("image", file);
 
     // 👉 Replace with your ImgBB API key
-    const apiKey = "IMGBB_API_KEY";
+    const apiKey =process.env.NEXT_PUBLIC_IMGBB_API_KEY;
 
     const res = await fetch(
       `https://api.imgbb.com/1/upload?key=${apiKey}`,
@@ -116,7 +116,7 @@ export default function ManageLegalProfilePage() {
 
             <div className="mt-2 text-sm">
               <p>Specialization: {item.specialization}</p>
-              <p>Fee: ৳ {item.fee}</p>
+              <p>Fee: ${item.fee}</p>
             </div>
 
             <div className="mt-4 flex gap-2">
