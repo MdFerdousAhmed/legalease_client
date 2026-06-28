@@ -1,7 +1,7 @@
 import React from 'react';
-import HiringHistoryPage from './HiringHistoryPage';
 import { getUserSession } from '@/lib/core/session';
 import { getApplicationsByHire } from '@/lib/api/hire';
+import HiringHistoryPage from './HiringHistoryPage';
 
 
 const page = async() => {
