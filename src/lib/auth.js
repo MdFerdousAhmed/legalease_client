@@ -22,11 +22,13 @@ export const auth = betterAuth({
     client
   }),
   user: {
-    role: {
-      default: "user"
-    },
-    plan: {
-      default: 'user_free'
+    additionalFields: {
+      userRole: {
+        defaultValue: "user"
+      },
+      plan: {
+        defaultValue: false
+      },
     }
   },
   plugins: [

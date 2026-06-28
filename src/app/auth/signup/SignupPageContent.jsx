@@ -50,15 +50,16 @@ export default function SignupPageContent() {
     const plan = role === "user" ? "user_fee" : "lawyer_fee";
 
     try {
+      console.log(role);
       const { data, error: authError } = await signUp.email({
         email,
         password,
         name,
-        role,
+        userRole: role,
         plan,
         callbackURL: "/",
       });
-
+       console.log(data);
       if (authError) {
         setError(authError.message || "Something went wrong during signup.");
         setIsLoading(false);
