@@ -83,7 +83,7 @@ export function DashboardSidebar() {
     },
   ];
 
-  const role = session?.user?.role;
+  const role = session?.user?.userRole;
 
   const navItems =
     role === "user"

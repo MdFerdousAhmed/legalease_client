@@ -16,6 +16,7 @@ export default function Navbar() {
 
   const user = session?.user;
 
+
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
@@ -37,7 +38,7 @@ export default function Navbar() {
     navLinks.push(
       {
         label: 'Dashboard',
-        href: dashboardLinks[user?.role || 'user']
+        href: dashboardLinks[user?.userRole || 'user']
       }
     )
   }

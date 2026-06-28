@@ -1,34 +1,43 @@
 "use client";
 
 import React from 'react';
+// Import the main Table component and useRouter for data synchronization
 import { Table } from '@heroui/react';
+import { useRouter } from 'next/navigation'; 
 import { updateHire } from '@/lib/actions/hire';
 
 const LawyerHiringHistoryPage = ({ hires = [] }) => {
+  const router = useRouter();
 
   // Helper to format MongoDB ISO date string into YYYY-MM-DD
   const formatDate = (dateInput) => {
     if (!dateInput) return '';
-
     // Extract string if it's coming from MongoDB wrapper {$date: "..."}
     const dateStr = dateInput.$date ? dateInput.$date : dateInput;
-
     return dateStr.split('T')[0];
   };
 
-  const handleAccept = async(id) => {
-    const result = await updateHire(id, {status: 'Accepted'})
-    if(result.modifiedCount){
-
-      console.log("Accepted request:", result);
+  const handleAccept = async (id) => {
+    try {
+      const result = await updateHire(id, { status: 'Accepted' });
+      if (result.modifiedCount) {
+        console.log("Accepted request successfully:", result);
+        router.refresh(); // Tells Next.js to fetch the updated server data
+      }
+    } catch (error) {
+      console.error("Failed to accept request:", error);
     }
   };
 
-  const handleReject = async(id) => {
-     const result = await updateHire(id, {status: 'Rejected'})
-    if(result.modifiedCount){
-
-      console.log("Accepted request:", result);
+  const handleReject = async (id) => {
+    try {
+      const result = await updateHire(id, { status: 'Rejected' });
+      if (result.modifiedCount) {
+        console.log("Rejected request successfully:", result); // Fixed your log typo here
+        router.refresh(); // Tells Next.js to fetch the updated server data
+      }
+    } catch (error) {
+      console.error("Failed to reject request:", error);
     }
   };
 
@@ -45,27 +54,28 @@ const LawyerHiringHistoryPage = ({ hires = [] }) => {
 
               {/* Table Header */}
               <Table.Header className="bg-gray-50 border-b border-gray-200">
-                {/* Added isRowHeader here to fix the console error */}
-                <Table.Column isRowHeader className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                {/* HeroUI V3 uses 'id' instead of 'key' for unique column targeting if needed */}
+                <Table.Column id="client" isRowHeader className="px-6 py-4 font-bold text-gray-900 text-[15px]">
                   Client Name
                 </Table.Column>
-                <Table.Column className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                <Table.Column id="date" className="px-6 py-4 font-bold text-gray-900 text-[15px]">
                   Request Date
                 </Table.Column>
-                <Table.Column className="px-6 py-4 font-bold text-gray-900 text-[15px]">
+                <Table.Column id="status" className="px-6 py-4 font-bold text-gray-900 text-[15px]">
                   Status
                 </Table.Column>
-                <Table.Column className="px-6 py-4 font-bold text-gray-900 text-[15px] text-center">
+                <Table.Column id="actions" className="px-6 py-4 font-bold text-gray-900 text-[15px] text-center">
                   Actions
                 </Table.Column>
               </Table.Header>
 
               {/* Table Body */}
-              <Table.Body>
+              <Table.Body emptyContent={"No hiring requests found."}>
                 {hires.map((item) => {
                   const itemId = item._id?.$oid || item._id;
                   return (
-                    <Table.Row key={itemId} className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
+                    // CRITICAL FIX: Changed 'key={itemId}' to 'id={itemId}' for HeroUI v3 compliance
+                    <Table.Row id={itemId} key={itemId} className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
 
                       {/* Client Name */}
                       <Table.Cell className="px-6 py-5 font-medium text-gray-900 text-base">
@@ -77,26 +87,33 @@ const LawyerHiringHistoryPage = ({ hires = [] }) => {
                         {formatDate(item.createdAt)}
                       </Table.Cell>
 
-                      {/* Status */}
-                      <Table.Cell className="px-6 py-5 text-base font-semibold text-amber-500 capitalize">
-                        {item.status}
+                      {/* Status with dynamic text colors */}
+                      <Table.Cell className={`px-6 py-5 text-base font-semibold capitalize ${
+                        item.status === 'Accepted' ? 'text-green-600' : 
+                        item.status === 'Rejected' ? 'text-red-600' : 'text-amber-500'
+                      }`}>
+                        {item.status || 'Pending'}
                       </Table.Cell>
 
                       {/* Actions */}
                       <Table.Cell className="px-6 py-5">
                         <div className="flex items-center justify-center gap-3">
-                          <button
-                            onClick={() => handleAccept(itemId)}
-                            className="px-5 py-2 bg-[#00c853] hover:bg-[#00b047] text-white font-medium rounded-lg text-[15px] transition-colors shadow-sm"
-                          >
-                            Accept
-                          </button>
-                          <button
-                            onClick={() => handleReject(itemId)}
-                            className="px-5 py-2 bg-[#ff3333] hover:bg-[#e62e2e] text-white font-medium rounded-lg text-[15px] transition-colors shadow-sm"
-                          >
-                            Reject
-                          </button>
+                          {item.status !== 'Accepted' && (
+                            <button
+                              onClick={() => handleAccept(itemId)}
+                              className="px-5 py-2 bg-[#00c853] hover:bg-[#00b047] text-white font-medium rounded-lg text-[15px] transition-colors shadow-sm"
+                            >
+                              Accept
+                            </button>
+                          )}
+                          {item.status !== 'Rejected' && (
+                            <button
+                              onClick={() => handleReject(itemId)}
+                              className="px-5 py-2 bg-[#ff3333] hover:bg-[#e62e2e] text-white font-medium rounded-lg text-[15px] transition-colors shadow-sm"
+                            >
+                              Reject
+                            </button>
+                          )}
                         </div>
                       </Table.Cell>
 
