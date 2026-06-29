@@ -66,7 +66,7 @@ export default function HireLawyerForm({ client, lawyer }) {
         <p>Fee: ${lawyer.fee}</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} action="/api/checkout_sessions" method="POST" className="space-y-4">
         <input
           type="text"
           name="phone"

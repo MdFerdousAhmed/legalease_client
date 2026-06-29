@@ -19,3 +19,21 @@ export const getLawyers = async () => {
 
   return res.json();
 };
+
+export const lawyerGet = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/users/${id}`); // Adjust your API URL path
+    
+    // Check if the response is not HTML/Error
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Server returned status ${response.status}:`, errorText);
+      return null; // Return null instead of crashing the application
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Network error inside lawyerGet:", error);
+    return null;
+  }
+};

@@ -1,216 +1,182 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Input, Button } from "@heroui/react";
+import Link from "next/link";
 
-export default function ManageLegalProfilePage() {
-  const [services, setServices] = useState([
-    {
-      id: "1",
-      name: "Criminal Defense Service",
-      bio: "Expert in criminal law cases.",
-      fee: 5000,
-      specialization: "Criminal Law",
-      image: "",
-    },
-    {
-      id: "2",
-      name: "Family Legal Service",
-      bio: "Handles divorce and family issues.",
-      fee: 7000,
-      specialization: "Family Law",
-      image: "",
-    },
-  ]);
+export default function UpdateProfilePage({ users }) {
 
-  const [editing, setEditing] = useState(null);
+  // 1. Core States matching your specific lawyer schema keys
+  const [fullName, setFullName] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [bio, setBio] = useState("");
+  const [fee, setFee] = useState("");
+  const [status, setStatus] = useState("Available");
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
-    name: "",
-    bio: "",
-    fee: "",
-    specialization: "",
-    image: "",
-  });
+  // 2. Hydrate states safely upon initialization
+  useEffect(() => {
+    if (users) {
+      if (users.name) setFullName(users.name);
+      if (users.specialization) setSpecialization(users.specialization);
+      if (users.bio) setBio(users.bio);
+      if (users.fee) setFee(users.fee);
+      if (users.status) setStatus(users.status);
+    }
+  }, [users]);
 
-  // DELETE
-  const handleDelete = (id) => {
-    setServices(services.filter((item) => item.id !== id));
-  };
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  // OPEN EDIT
-  const handleEdit = (service) => {
-    setEditing(service);
-    setForm(service);
-  };
+    try {
+      // Extract structural ID safely (handles nesting under $oid)
+      const userId = users?._id?.$oid || users?._id || users?.id;
 
-  // HANDLE CHANGE
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
-  // SAVE UPDATE
-  const handleUpdate = () => {
-    setServices(
-      services.map((item) =>
-        item.id === editing.id ? { ...form, id: editing.id } : item
-      )
-    );
+      if (!userId) throw new Error("Could not extract a valid User ID.");
 
-    setEditing(null);
-    setForm({
-      name: "",
-      bio: "",
-      fee: "",
-      specialization: "",
-      image: "",
-    });
-  };
+      let finalPhotoUrl = users?.photoUrl || "";
 
-  // IMAGE UPLOAD (ImgBB placeholder)
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+      // Upload profile graphic to ImgBB if changed
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
 
-    if (!file) return;
+        const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+        if (!IMGBB_API_KEY) throw new Error("Missing NEXT_PUBLIC_IMGBB_API_KEY in your env configuration.");
 
-    const formData = new FormData();
-    formData.append("image", file);
+        const imgResponse = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: "POST",
+          body: formData,
+        });
 
-    // 👉 Replace with your ImgBB API key
-    const apiKey =process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-
-    const res = await fetch(
-      `https://api.imgbb.com/1/upload?key=${apiKey}`,
-      {
-        method: "POST",
-        body: formData,
+        const imgData = await imgResponse.json();
+        if (imgData.success) {
+          finalPhotoUrl = imgData.data.display_url;
+        } else {
+          throw new Error("Failed to upload image to ImgBB.");
+        }
       }
-    );
 
-    const data = await res.json();
+      // Pack payload directly matching schema requirements
+      const updatedUserPayload = {
+        name: fullName,
+        specialization,
+        bio,
+        fee,
+        status,
+        photoUrl: finalPhotoUrl
+      };
 
-    if (data?.data?.url) {
-      setForm({ ...form, image: data.data.url });
+      // Patch the database collection changes
+      const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUserPayload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        alert("🎉 Profile updated successfully!");
+      } else {
+        alert(`❌ Update failed: ${result.message}`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "An unexpected network error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">
-        Manage Legal Services
-      </h1>
+    <div className="p-8 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Update Profile</h1>
+      <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
+        <form onSubmit={handleUpdate} className="space-y-6">
 
-      {/* SERVICES LIST */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {services.map((item) => (
-          <div key={item.id} className="rounded-lg border p-4">
-            {item.image && (
-              <img
-                src={item.image}
-                alt={item.name}
-                className="mb-3 h-40 w-full rounded object-cover"
-              />
-            )}
-
-            <h2 className="text-lg font-semibold">{item.name}</h2>
-            <p className="text-sm text-gray-600">{item.bio}</p>
-
-            <div className="mt-2 text-sm">
-              <p>Specialization: {item.specialization}</p>
-              <p>Fee: ${item.fee}</p>
-            </div>
-
-            <div className="mt-4 flex gap-2">
-              <button
-                onClick={() => handleEdit(item)}
-                className="rounded bg-blue-500 px-3 py-1 text-white"
-              >
-                Edit
-              </button>
-
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="rounded bg-red-500 px-3 py-1 text-white"
-              >
-                Delete
-              </button>
-            </div>
+          {/* Full Name Input */}
+          <div>
+            <label className="block text-base font-bold text-gray-900 mb-2">Full Name</label>
+            <Input
+              type="text"
+              variant="bordered"
+              radius="lg"
+              size="lg"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full text-base text-gray-900"
+            />
           </div>
-        ))}
+
+          {/* Specialization Input */}
+          <div>
+            <label className="block text-base font-bold text-gray-900 mb-2">Specialization</label>
+            <Input
+              type="text"
+              variant="bordered"
+              radius="lg"
+              size="lg"
+              value={specialization}
+              onChange={(e) => setSpecialization(e.target.value)}
+              className="w-full text-base text-gray-900"
+            />
+          </div>
+
+          {/* Fee Input */}
+          <div>
+            <label className="block text-base font-bold text-gray-900 mb-2">Consultation Fee ($)</label>
+            <Input
+              type="number"
+              variant="bordered"
+              radius="lg"
+              size="lg"
+              value={fee}
+              onChange={(e) => setFee(e.target.value)}
+              className="w-full text-base text-gray-900"
+            />
+          </div>
+
+          {/* Bio Text Input */}
+          <div>
+            <label className="block text-base font-bold text-gray-900 mb-2">Biography</label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className="w-full text-base text-gray-900 p-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 outline-none transition-colors"
+              rows={3}
+            />
+          </div>
+
+          {/* Profile Picture File Selection */}
+          <div>
+            <label className="block text-base font-bold text-gray-900 mb-2">Profile Picture</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer"
+            />
+          </div>
+
+          <Button
+            as={Link}
+            href="/dashboard/lawyer"
+            type="submit"
+            color="primary"
+            radius="lg"
+            isLoading={loading}
+            className="w-full bg-[#1a66ff] hover:bg-[#0052cc] text-white font-medium text-base h-12 transition-colors shadow-sm"
+          >
+            Update Profile
+          </Button>
+        </form>
       </div>
-
-      {/* EDIT MODAL */}
-      {editing && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-lg rounded-lg bg-white p-6">
-            <h2 className="mb-4 text-lg font-bold">
-              Edit Legal Service
-            </h2>
-
-            <div className="space-y-3">
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Service Name"
-                className="w-full rounded border p-2"
-              />
-
-              <textarea
-                name="bio"
-                value={form.bio}
-                onChange={handleChange}
-                placeholder="Bio"
-                className="w-full rounded border p-2"
-              />
-
-              <input
-                name="fee"
-                value={form.fee}
-                onChange={handleChange}
-                placeholder="Fee"
-                className="w-full rounded border p-2"
-              />
-
-              <input
-                name="specialization"
-                value={form.specialization}
-                onChange={handleChange}
-                placeholder="Specialization"
-                className="w-full rounded border p-2"
-              />
-
-              {/* IMAGE UPLOAD */}
-              <input
-                type="file"
-                onChange={handleImageUpload}
-              />
-
-              {form.image && (
-                <img
-                  src={form.image}
-                  className="h-32 w-full rounded object-cover"
-                />
-              )}
-            </div>
-
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                onClick={() => setEditing(null)}
-                className="rounded bg-gray-300 px-4 py-2"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={handleUpdate}
-                className="rounded bg-green-600 px-4 py-2 text-white"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

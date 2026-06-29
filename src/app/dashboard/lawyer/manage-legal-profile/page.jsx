@@ -1,13 +1,17 @@
-import React from 'react';
+
+// import { lawyerGet } from '@/lib/api/lawyer';
 import ManageLegalProfilePage from './ManageLegalProfilePage';
 import { getUserSession } from '@/lib/core/session';
 
-const page = () => {
-  const users = getUserSession();
+
+const page = async({params}) => {
+  // const {id} = await params;
+  // const lawyer = await lawyerGet(id)
+  const users = await getUserSession();
   console.log(users);
   return (
     <div>
-      <ManageLegalProfilePage/>
+      <ManageLegalProfilePage users={users}/>
     </div>
   );
 };

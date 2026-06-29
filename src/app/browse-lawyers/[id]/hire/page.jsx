@@ -6,8 +6,10 @@ import HireLawyerForm from './HireLawyerForm';
 
 const HirePage = async({params}) => {
   const {id} = await params;
-
+  const lawyer = await lawyerGet(id)
+  
   const user = await getUserSession();
+
 
   if(!user) {
     redirect(`/auth/signin?redirect=/browse-lawyers/${id}/hire`);
@@ -21,7 +23,6 @@ const HirePage = async({params}) => {
     )
   }
 
-  const lawyer = await lawyerGet(id)
 
   return (
     <div>
